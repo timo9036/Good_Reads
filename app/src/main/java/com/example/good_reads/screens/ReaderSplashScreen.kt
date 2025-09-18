@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.good_reads.components.ReaderLogo
+import com.example.good_reads.navigation.ReaderScreens
 import kotlinx.coroutines.delay
 
 @Composable
@@ -42,6 +44,8 @@ fun ReaderSplashScreen(navController: NavController) {
                 })
         )
         delay(2000)
+
+        navController.navigate(ReaderScreens.LoginScreen.name)
     }
     Surface(
         modifier = Modifier
@@ -56,10 +60,7 @@ fun ReaderSplashScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Good Reads", style = MaterialTheme.typography.labelLarge,
-                color = Color.Red.copy(alpha = 0.5f)
-            )
+            ReaderLogo()
             Spacer(modifier = Modifier.height(15.dp))
             Text(
                 text = "\"Read. Change. Yourself\"",
@@ -69,3 +70,4 @@ fun ReaderSplashScreen(navController: NavController) {
         }
     }
 }
+
