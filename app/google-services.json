@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "207129365734",
+    "project_id": "good-reads-8683a",
+    "storage_bucket": "good-reads-8683a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207129365734:android:d7c92969d41f843f827f27",
+        "android_client_info": {
+          "package_name": "com.example.good_reads"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7KklTR8MzGYWZPLpuEnO-9yJeTt84XII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
