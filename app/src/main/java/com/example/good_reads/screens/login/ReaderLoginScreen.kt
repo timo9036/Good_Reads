@@ -77,7 +77,9 @@ fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewMo
                 }
             } else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->
-                    //TODO: Add logic for creating an account
+                    viewModel.createUserWithEmailAndPassword(email, password) {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
                 }
             }
 
@@ -120,8 +122,6 @@ fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewMo
 }
 
 
-
-
 @Preview
 @Composable
 fun UserForm(
@@ -148,8 +148,10 @@ fun UserForm(
         .verticalScroll(rememberScrollState())
 
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        if (isCreateAccount) Text(text = stringResource(id = R.string.create_acct),
-            modifier = Modifier.padding(4.dp)) else Text("")
+        if (isCreateAccount) Text(
+            text = stringResource(id = R.string.create_acct),
+            modifier = Modifier.padding(4.dp)
+        ) else Text("")
         EmailInput(
             emailState = email, enabled = !loading,
             onAction = KeyboardActions {
