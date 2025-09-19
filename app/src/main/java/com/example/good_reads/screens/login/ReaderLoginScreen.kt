@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -46,14 +48,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.good_reads.R
 import com.example.good_reads.components.EmailInput
 import com.example.good_reads.components.PasswordInput
 import com.example.good_reads.components.ReaderLogo
+import com.example.good_reads.navigation.ReaderScreens
 
 @Composable
-fun ReaderLoginScreen(navController: NavController) {
+fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewModel = viewModel()) {
 
     val showLoginForm = rememberSaveable {
         mutableStateOf(true)
@@ -65,37 +69,57 @@ fun ReaderLoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ) {
             ReaderLogo()
-            if (showLoginForm.value)
+            if (showLoginForm.value) {
                 UserForm(loading = false, isCreateAccount = false) { email, password ->
-                    //todo
+                    viewModel.signInWithEmailAndPassword(email, password) {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
                 }
-            else {
+            } else {
                 UserForm(loading = false, isCreateAccount = true) { email, password ->
-                    //todo
+                    //TODO: Add logic for creating an account
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(15.dp))
-        Row(
-            modifier = Modifier.padding(15.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val text = if (showLoginForm.value) "Sign up" else "Login"
-            Text(text = "New User?")
-            Text(
-                text,
-                modifier = Modifier
-                    .clickable {
-                        showLoginForm.value = !showLoginForm.value
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row(
+                modifier = Modifier.padding(15.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val text = if (showLoginForm.value) "Sign up" else "Login"
+                Text(text = "New User?")
+                Text(
+                    text,
+                    modifier = Modifier
+                        .clickable {
+                            showLoginForm.value = !showLoginForm.value
+                        }
+                        .padding(start = 5.dp),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                )
+            }
+
+            // New Button for Guest Login
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = {
+                    viewModel.signInWithEmailAndPassword("guest@guest.com", "tester") {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
-                    .padding(start = 5.dp),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.secondaryContainer
-            )
+                },
+                modifier = Modifier.padding(horizontal = 15.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text(text = "Login as Guest")
+            }
         }
     }
 }
+
+
 
 
 @Preview

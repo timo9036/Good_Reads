@@ -72,4 +72,8 @@ dependencies {
 
     val lifecycle_version = "2.9.3"
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+
+    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+    implementation("com.google.firebase:firebase-auth")
+
 }
