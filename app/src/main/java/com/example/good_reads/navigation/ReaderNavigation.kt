@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.good_reads.screens.ReaderSplashScreen
 import com.example.good_reads.screens.home.Home
 import com.example.good_reads.screens.login.ReaderLoginScreen
-import com.example.good_reads.screens.search.BookSearchViewModel
+import com.example.good_reads.screens.search.BooksSearchViewModel
 import com.example.good_reads.screens.search.SearchScreen
 import com.example.good_reads.screens.stats.ReaderStatsScreen
 
@@ -32,7 +32,7 @@ fun ReaderNavigation() {
             Home(navController = navController)
         }
         composable(ReaderScreens.SearchScreen.name){
-            val viewModel = hiltViewModel<BookSearchViewModel>()
+            val viewModel = hiltViewModel<BooksSearchViewModel>()
             SearchScreen(navController = navController, viewModel)
         }
     }

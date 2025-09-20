@@ -1,7 +1,6 @@
 package com.example.good_reads.screens.search
 
 import android.annotation.SuppressLint
-import android.view.Surface
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -34,21 +34,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.good_reads.components.InputField
 import com.example.good_reads.components.ReaderAppBar
-import com.example.good_reads.model.MBook
+import com.example.good_reads.model.Item
 import com.example.good_reads.navigation.ReaderScreens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
+fun SearchScreen(navController: NavController, viewModel: BooksSearchViewModel = hiltViewModel()) {
     Scaffold(topBar = {
         ReaderAppBar(
             title = "Search Books",
@@ -65,11 +64,9 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
                 SearchForm(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    viewModel
-                ){
-                    query ->
-                    viewModel.searchBooks(query)
+                        .padding(16.dp)){ searchQuery ->
+
+                    viewModel.searchBooks(searchQuery)
                 }
 
                 Spacer(modifier = Modifier.height(13.dp))
@@ -80,25 +77,25 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
 }
 
 @Composable
-fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
-    val listOfBooks = listOf(
-        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null)
-    )
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        items(items = listOfBooks) { book ->
-            BookRow(book, navController)
+fun BookList(navController: NavController, viewModel: BooksSearchViewModel = hiltViewModel()) {
+
+    val listOfBooks = viewModel.list
+    if (viewModel.isLoading){
+        LinearProgressIndicator()
+    }else{
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(items = listOfBooks) { book ->
+                BookRow(book, navController)
+            }
         }
     }
 }
 
 @Composable
-fun BookRow(book: MBook, navcontroller: NavController) {
+fun BookRow(book: Item, navcontroller: NavController) {
     Card(
         modifier = Modifier
             .clickable {}
@@ -113,7 +110,8 @@ fun BookRow(book: MBook, navcontroller: NavController) {
             modifier = Modifier.padding(5.dp),
             verticalAlignment = Alignment.Top
         ) {
-            val imageUrl = ""
+            val imageUrl = book.volumeInfo?.imageLinks?.smallThumbnail.takeIf { !it.isNullOrEmpty() }
+                ?: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80"
             Image(
                 painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "book image",
@@ -123,12 +121,28 @@ fun BookRow(book: MBook, navcontroller: NavController) {
                     .padding(end = 4.dp)
             )
             Column() {
-                Text(text = book.title.toString(), overflow = TextOverflow.Ellipsis)
+                Text(text = book.volumeInfo?.title ?: "No Title", overflow = TextOverflow.Ellipsis)
                 Text(
-                    text = "Author: ${book.authors}",
+                    text = "Author: ${book.volumeInfo?.authors?.joinToString(", ") ?: "N/A"}",
                     overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.labelLarge
                 )
+
+                Text(
+                    text = "Date: ${book.volumeInfo?.publishedDate?: "N/A"}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.labelLarge
+                )
+
+                Text(
+                    text = book.volumeInfo?.categories?.joinToString(", ") ?: "N/A",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.labelLarge
+                )
+
                 //todo
             }
         }
@@ -138,7 +152,6 @@ fun BookRow(book: MBook, navcontroller: NavController) {
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
-    viewModel: BookSearchViewModel,
     loading: Boolean = false,
     hint: String = "Search",
     onSearch: (String) -> Unit = {}
