@@ -8,7 +8,7 @@ enum class ReaderScreens {
     SearchScreen,
     DetailScreen,
     UpdateScreen,
-    ReadStatsScreen;
+    ReaderStatsScreen;
 
     companion object {
         fun fromRoute(route: String?): ReaderScreens = when (route?.substringBefore("/")) {
@@ -19,7 +19,7 @@ enum class ReaderScreens {
             SearchScreen.name -> SearchScreen
             DetailScreen.name -> DetailScreen
             UpdateScreen.name -> UpdateScreen
-            ReadStatsScreen.name -> ReadStatsScreen
+            ReaderStatsScreen.name -> ReaderStatsScreen
             null -> ReaderHomeScreen
             else -> throw IllegalArgumentException("Route $route is not recognized")
         }

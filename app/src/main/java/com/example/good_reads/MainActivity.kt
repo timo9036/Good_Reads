@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Good_ReadsTheme {
-
                 ReaderApp()
             }
         }
