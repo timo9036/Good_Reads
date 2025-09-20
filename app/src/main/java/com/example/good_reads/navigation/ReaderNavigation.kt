@@ -1,6 +1,7 @@
 package com.example.good_reads.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
@@ -8,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.good_reads.screens.ReaderSplashScreen
 import com.example.good_reads.screens.home.Home
 import com.example.good_reads.screens.login.ReaderLoginScreen
+import com.example.good_reads.screens.search.BookSearchViewModel
+import com.example.good_reads.screens.search.SearchScreen
 import com.example.good_reads.screens.stats.ReaderStatsScreen
 
 @Composable
@@ -27,6 +30,10 @@ fun ReaderNavigation() {
         }
         composable(ReaderScreens.ReaderHomeScreen.name){
             Home(navController = navController)
+        }
+        composable(ReaderScreens.SearchScreen.name){
+            val viewModel = hiltViewModel<BookSearchViewModel>()
+            SearchScreen(navController = navController, viewModel)
         }
     }
 }

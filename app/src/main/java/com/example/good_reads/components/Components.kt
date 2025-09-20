@@ -3,6 +3,7 @@ package com.example.good_reads.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -61,7 +63,9 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ReaderLogo(modifier: Modifier = Modifier) {
     Text(
-        text = "Good Reads", modifier = modifier.padding(16.dp), style = MaterialTheme.typography.labelLarge,
+        text = "Good Reads",
+        modifier = modifier.padding(16.dp),
+        style = MaterialTheme.typography.labelLarge,
         color = Color.Red.copy(alpha = 0.5f)
     )
 }
@@ -161,8 +165,10 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 @Composable
 fun ReaderAppBar(
     title: String,
+    icon: ImageVector? = null,
     showProfile: Boolean = true,
-    navController: NavController
+    navController: NavController,
+    onBackArrowClicked: () -> Unit = {}
 ) {
     TopAppBar(
         title = {
@@ -175,12 +181,19 @@ fun ReaderAppBar(
                             .scale(0.7f)
                     )
                 }
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon, contentDescription = "arrow back",
+                        tint = Color.Red.copy(alpha = 0.7f),
+                        modifier = Modifier.clickable { onBackArrowClicked.invoke() })
+                }
+                Spacer(modifier = Modifier.width(40.dp))
                 Text(
                     text = title,
                     color = Color.Red.copy(alpha = 0.7f),
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 )
-                Spacer(modifier = Modifier.width(150.dp))
+
             }
         }, actions = {
             IconButton(onClick = {
@@ -188,10 +201,13 @@ fun ReaderAppBar(
                     navController.navigate(ReaderScreens.LoginScreen.name)
                 }
             }) {
-                Icon(
-                    Icons.Filled.PlayArrow, contentDescription = "Logout",
-                    tint = Color.Green.copy(alpha = 0.4f)
-                )
+                if (showProfile) Row {
+                    Icon(
+                        Icons.Filled.PlayArrow, contentDescription = "Logout",
+                        tint = Color.Green.copy(alpha = 0.4f)
+                    )
+                } else Box{}
+
             }
         }, colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent

@@ -78,13 +78,12 @@ fun Home(navController: NavController) {
         ReaderAppBar(title = "Good Reads", navController = navController)
     }, floatingActionButton = {
         FABContent {
-
+            navController.navigate(ReaderScreens.SearchScreen.name)
         }
-    }) {innerPadding ->
+    }) { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                // 2. Apply the padding here. This pushes your content down, below the TopAppBar.
                 .padding(innerPadding)
         ) {
             HomeContent(navController)
@@ -94,13 +93,12 @@ fun Home(navController: NavController) {
 
 @Composable
 fun HomeContent(navController: NavController) {
-val listOfBooks = listOf(
-    MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-            MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-    MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-    MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
-
-    )
+    val listOfBooks = listOf(
+        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
+        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
+        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
+        MBook(id = "asdfasd", title = "Hello", authors = "ALL of us", notes = null),
+        )
     val email = FirebaseAuth.getInstance().currentUser?.email
     val currentUserName = if (!email.isNullOrEmpty())
         email?.split("@")?.get(0) else "N/A"
@@ -142,7 +140,7 @@ val listOfBooks = listOf(
 
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
-    HorizontalScrollableComponent(listOfBooks){
+    HorizontalScrollableComponent(listOfBooks) {
         //todo
     }
 }
