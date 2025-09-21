@@ -1,9 +1,6 @@
 package com.example.good_reads.screens.update
 
 import android.annotation.SuppressLint
-import android.media.Rating
-import android.view.Surface
-import android.widget.RatingBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -54,7 +52,6 @@ import com.example.good_reads.components.ReaderAppBar
 import com.example.good_reads.components.RoundedButton
 import com.example.good_reads.components.showToast
 import com.example.good_reads.data.DataOrException
-import com.example.good_reads.data.Resource
 import com.example.good_reads.model.MBook
 import com.example.good_reads.navigation.ReaderScreens
 import com.example.good_reads.screens.home.HomeScreenViewModel
@@ -64,7 +61,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BookUpdateScren(
+fun BookUpdateScreen(
     navController: NavHostController,
     bookItemId: String,
     viewModel: HomeScreenViewModel = hiltViewModel()
@@ -122,8 +119,9 @@ fun BookUpdateScren(
 
 @Composable
 fun ShowSimpleForm(book: MBook, navController: NavController) {
-    val notesText = remember {
-        mutableStateOf("")
+
+    val notesText = rememberSaveable {
+        mutableStateOf(book.notes.orEmpty())
     }
     val isStartedReading = remember {
         mutableStateOf(false)
@@ -136,11 +134,8 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
     }
     val context = LocalContext.current
     SimpleForm(
-        defaultValue = if (book.notes.toString().isNotEmpty()) book.notes.toString()
-        else "No thoughts available"
-    ) { note ->
-        notesText.value = note
-    }
+        valueState = notesText
+    )
     Row(
         modifier = Modifier.padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -166,7 +161,7 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
         }
         Spacer(modifier = Modifier.height(4.dp))
         TextButton(
-            onClick = {},
+            onClick = { isFinishedReading.value = true },
             enabled = book.finishedReading == null
         ) {
             if (book.finishedReading == null) {
@@ -176,7 +171,7 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
                     Text(text = "Finished Reading!")
                 }
             } else {
-                Text(text = "Started on ${formatDate(book.finishedReading!!)}")
+                Text(text = "Finished on ${formatDate(book.finishedReading!!)}")
             }
         }
     }
@@ -229,28 +224,28 @@ fun ShowSimpleForm(book: MBook, navController: NavController) {
 fun SimpleForm(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
-    defaultValue: String = "Great Book!",
-    onSearch: (String) -> Unit
-) {
-    Column {
-        val textFieldValue = rememberSaveable { mutableStateOf(defaultValue) }
-        val keyboardController = LocalSoftwareKeyboardController.current
-        val valid = remember(textFieldValue.value) { textFieldValue.value.trim().isNotEmpty() }
 
-        InputField(
-            modifier
-                .fillMaxWidth()
-                .height(140.dp)
-                .padding(3.dp)
-                .background(Color.White, CircleShape)
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            valueState = textFieldValue, labelId = "Enter Your Thoughts", enabled = true,
-            onAction = KeyboardActions {
-                if (!valid) return@KeyboardActions
-                onSearch(textFieldValue.value.trim())
-                keyboardController?.hide()
-            })
-    }
+    valueState: MutableState<String>
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val valid = remember(valueState.value) { valueState.value.trim().isNotEmpty() }
+
+    InputField(
+        modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .padding(3.dp)
+            .background(Color.White, CircleShape)
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        valueState = valueState,
+        labelId = "Enter Your Thoughts",
+        enabled = true,
+        onAction = KeyboardActions {
+            if (!valid) return@KeyboardActions
+            keyboardController?.hide()
+        }
+    )
 }
 
 @Composable

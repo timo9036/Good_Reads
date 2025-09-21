@@ -16,7 +16,7 @@ import com.example.good_reads.screens.login.ReaderLoginScreen
 import com.example.good_reads.screens.search.BooksSearchViewModel
 import com.example.good_reads.screens.search.SearchScreen
 import com.example.good_reads.screens.stats.ReaderStatsScreen
-import com.example.good_reads.screens.update.BookUpdateScren
+import com.example.good_reads.screens.update.BookUpdateScreen
 
 @Composable
 fun ReaderNavigation() {
@@ -58,7 +58,7 @@ fun ReaderNavigation() {
             })
         ) { navBackStackEntry ->
             navBackStackEntry.arguments?.getString("bookItemId").let {
-                BookUpdateScren(navController = navController, bookItemId = it.toString())
+                BookUpdateScreen(navController = navController, bookItemId = it.toString())
             }
         }
     }
