@@ -275,102 +275,108 @@ fun BookRating(score: Double = 4.5) {
 }
 
 @Composable
-fun ListCard(
-    book: MBook,
-    onPressDetails: (String) -> Unit = {}
-) {
+fun ListCard(book: MBook,
+             onPressDetails: (String) -> Unit = {}) {
     val context = LocalContext.current
     val resources = context.resources
+
     val displayMetrics = resources.displayMetrics
+
     val screenWidth = displayMetrics.widthPixels / displayMetrics.density
     val spacing = 10.dp
-    Card(
-        shape = RoundedCornerShape(29.dp),
+
+    Card(shape = RoundedCornerShape(29.dp),
         colors = CardDefaults.cardColors(
+
             containerColor = Color.White
+
         ),
+
         elevation = CardDefaults.cardElevation(
+
             defaultElevation = 6.dp
+
         ),
         modifier = Modifier
             .padding(16.dp)
             .height(242.dp)
             .width(202.dp)
             .clickable { onPressDetails.invoke(book.title.toString()) }) {
-        Column(
-            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
-            horizontalAlignment = Alignment.Start
-        ) {
+
+        Column(modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+            horizontalAlignment = Alignment.Start) {
             Row(horizontalArrangement = Arrangement.Center) {
-                Image(
-                    painter = rememberImagePainter(data = book.photoUrl.toString()),
+
+                Image(painter = rememberImagePainter(data = book.photoUrl.toString()),
                     contentDescription = "book image",
                     modifier = Modifier
                         .height(140.dp)
                         .width(100.dp)
-                        .padding(4.dp)
-                )
+                        .padding(4.dp))
                 Spacer(modifier = Modifier.width(50.dp))
-                Column(
-                    modifier = Modifier.padding(top = 25.dp),
+
+                Column(modifier = Modifier.padding(top = 25.dp),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(imageVector = Icons.Rounded.FavoriteBorder,
                         contentDescription = "Fav Icon",
-                        modifier = Modifier.padding(bottom = 1.dp)
-                    )
-                    BookRating(score = 3.5)
+                        modifier = Modifier.padding(bottom = 1.dp))
+
+                    BookRating(score = book.rating!!)
                 }
+
             }
-            Text(
-                text = book.title.toString(), modifier = Modifier.padding(4.dp),
+            Text(text = book.title.toString(), modifier = Modifier.padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = book.authors.toString(), modifier = Modifier.padding(4.dp),
-                style = MaterialTheme.typography.labelLarge
-            )
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                RoundedButton(label = "Reading", radius = 70)
-            }
+                overflow = TextOverflow.Ellipsis)
+
+            Text(text = book.authors.toString(), modifier = Modifier.padding(4.dp),
+                style = MaterialTheme.typography.bodyMedium) }
+
+        val isStartedReading = remember {
+            mutableStateOf(false)
         }
 
+        Row(horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom) {
+            isStartedReading.value = book.startedReading != null
+
+
+            RoundedButton(label = if (isStartedReading.value)  "Reading" else "Not Yet",
+                radius = 70)
+
+        }
     }
+
+
+
 }
 
 @Composable
 fun RoundedButton(
     label: String = "Reading",
     radius: Int = 29,
-    onPress: () -> Unit = {}
-) {
-    Surface(
-        modifier = Modifier.clip(
-            RoundedCornerShape(
-                bottomEndPercent = radius,
-                topStartPercent = radius
-            )
-        ),
-        color = Color(0xFF92CBDF)
-    ) {
-        Column(
-            modifier = Modifier
-                .width(90.dp)
-                .heightIn(40.dp)
-                .clickable { onPress.invoke() },
+    onPress: () -> Unit = {}) {
+    Surface(modifier = Modifier.clip(RoundedCornerShape(
+        bottomEndPercent = radius,
+        topStartPercent = radius)),
+        color = Color(0xFF92CBDF)) {
+
+        Column(modifier = Modifier
+            .width(90.dp)
+            .heightIn(40.dp)
+            .clickable { onPress.invoke() },
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = label, style = TextStyle(color = Color.White, fontSize = 15.sp))
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = label, style = TextStyle(color = Color.White,
+                fontSize = 15.sp),)
+
         }
+
     }
+
+
 }
 
 @Composable
