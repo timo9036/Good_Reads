@@ -28,7 +28,6 @@ Good Reads is an app for book lovers to discover new books, track their reading 
 ## 📸 Screenshots
 
 Here's a glimpse of the Good Reads app in action!
-
 <table>
   <tr>
      <th>Login Page</th>
@@ -38,13 +37,13 @@ Here's a glimpse of the Good Reads app in action!
 
   <tr>
     <td>
-           <img src="timo9036/good_reads/Good_Reads-3ab355353379c46e6122923e574e6d76dd5a1b2c/Screenshot_20250921_161345.png" alt="Login Page">
+           <img src="Screenshot_20250921_161345.png" alt="Login Page">
    </td>
    <td>
-           <img src="timo9036/good_reads/Good_Reads-3ab355353379c46e6122923e574e6d76dd5a1b2c/Screenshot_20250921_161354.png" alt="Main Page">
+           <img src="Screenshot_20250921_161354.png" alt="Main Page">
    </td>
    <td>
-           <img src="timo9036/good_reads/Good_Reads-3ab355353379c46e6122923e574e6d76dd5a1b2c/Screenshot_20250921_161423.png" alt="Search Page">
+           <img src="Screenshot_20250921_161423.png" alt="Search Page">
    </td>
   </tr>
 
@@ -58,10 +57,10 @@ Here's a glimpse of the Good Reads app in action!
 
   <tr>
    <td>
-           <img src="timo9036/good_reads/Good_Reads-3ab355353379c46e6122923e574e6d76dd5a1b2c/Screenshot_20250921_161411.png" alt="Update Page">
+           <img src="Screenshot_20250921_161411.png" alt="Update Page">
    </td>
    <td>
-           <img src="timo9036/good_reads/Good_Reads-3ab355353379c46e6122923e574e6d76dd5a1b2c/Screenshot_20250921_161431.png" alt="Stats Page">
+           <img src="Screenshot_20250921_161431.png" alt="Stats Page">
    </td>
   </tr>
 
