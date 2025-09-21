@@ -1,4 +1,4 @@
-package com.example.good_reads.ui
+package com.example.good_reads.utils
 
 object Constants {
     //https://www.googleapis.com/books/v1/volumes?q=flutter

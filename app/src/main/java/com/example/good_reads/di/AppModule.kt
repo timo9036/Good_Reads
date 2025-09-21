@@ -1,9 +1,9 @@
 package com.example.good_reads.di
 
 import com.example.good_reads.network.BooksApi
-import com.example.good_reads.repository.BookRepository
-import com.example.good_reads.ui.Constants
-import com.example.good_reads.ui.Constants.BASE_URL
+import com.example.good_reads.repository.FireRepository
+import com.example.good_reads.utils.Constants
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +15,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Singleton
+    @Provides
+    fun provideFireBookRepository()
+            = FireRepository(queryBook = FirebaseFirestore.getInstance()
+        .collection("books"))
 
     @Singleton
     @Provides
@@ -26,7 +31,4 @@ object AppModule {
             .create(BooksApi::class.java)
     }
 
-    @Singleton
-    @Provides
-    fun provideBookRepository(api: BooksApi) = BookRepository(api)
 }
