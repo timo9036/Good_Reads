@@ -3,6 +3,7 @@ package com.example.good_reads.screens.search
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -64,7 +65,8 @@ fun SearchScreen(navController: NavController, viewModel: BooksSearchViewModel =
                 SearchForm(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)){ searchQuery ->
+                        .padding(16.dp)
+                ) { searchQuery ->
 
                     viewModel.searchBooks(searchQuery)
                 }
@@ -80,9 +82,12 @@ fun SearchScreen(navController: NavController, viewModel: BooksSearchViewModel =
 fun BookList(navController: NavController, viewModel: BooksSearchViewModel = hiltViewModel()) {
 
     val listOfBooks = viewModel.list
-    if (viewModel.isLoading){
-        LinearProgressIndicator()
-    }else{
+    if (viewModel.isLoading) {
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            LinearProgressIndicator()
+            Text(text = "Loading...")
+        }
+    } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp)
@@ -98,7 +103,9 @@ fun BookList(navController: NavController, viewModel: BooksSearchViewModel = hil
 fun BookRow(book: Item, navcontroller: NavController) {
     Card(
         modifier = Modifier
-            .clickable {}
+            .clickable {
+                navcontroller.navigate(ReaderScreens.DetailScreen.name + "/${book.id}")
+            }
             .fillMaxWidth()
             .height(100.dp)
             .padding(3.dp),
@@ -110,8 +117,9 @@ fun BookRow(book: Item, navcontroller: NavController) {
             modifier = Modifier.padding(5.dp),
             verticalAlignment = Alignment.Top
         ) {
-            val imageUrl = book.volumeInfo?.imageLinks?.smallThumbnail.takeIf { !it.isNullOrEmpty() }
-                ?: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80"
+            val imageUrl =
+                book.volumeInfo?.imageLinks?.smallThumbnail.takeIf { !it.isNullOrEmpty() }
+                    ?: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=80&q=80"
             Image(
                 painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "book image",
@@ -130,7 +138,7 @@ fun BookRow(book: Item, navcontroller: NavController) {
                 )
 
                 Text(
-                    text = "Date: ${book.volumeInfo?.publishedDate?: "N/A"}",
+                    text = "Date: ${book.volumeInfo?.publishedDate ?: "N/A"}",
                     overflow = TextOverflow.Clip,
                     fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.labelLarge
