@@ -30,41 +30,47 @@ Good Reads is an app for book lovers to discover new books, track their reading 
 Here's a glimpse of the Good Reads app in action!
 <table>
   <tr>
+     <th>Splash Page</th>
      <th>Login Page</th>
      <th>Main Page</th>
-     <th>Search Page</th>
+<th>Stats Page</th>
   </tr>
 
   <tr>
     <td>
-           <img src="Screenshot_20250921_161345.png" alt="Login Page">
-   </td>
-   <td>
-           <img src="Screenshot_20250921_161354.png" alt="Main Page">
-   </td>
-   <td>
-           <img src="Screenshot_20250921_161423.png" alt="Search Page">
-   </td>
+        <img src="Screenshot_20250922_154538.png" alt="Splash Page">
+    </td>
+    <td>
+        <img src="Screenshot_20250922_154548.png" alt="Login Page">
+    </td>
+    <td>
+        <img src="Screenshot_20250922_154559.png" alt="Main Page">
+    </td>
+<td>
+        <img src="Screenshot_20250922_154610.png" alt="Stats Page">
+    </td>
   </tr>
 
- </table>
+</table>
 
- <table>
+<table>
   <tr>
     <th>Update Page</th>
-    <th>Stats Page</th>
+<th>New Feature Page</th>
+<th>User Profile Page</th>
   </tr>
-
   <tr>
-   <td>
-           <img src="Screenshot_20250921_161411.png" alt="Update Page">
-   </td>
-   <td>
-           <img src="Screenshot_20250921_161431.png" alt="Stats Page">
-   </td>
+    <td>
+<img src="Screenshot_20250922_154639.png" alt="Update Page">
+    </td>
+<td>
+<img src="Screenshot_20250922_154657.png"Search Page">
+    </td>
+<td>
+<img src="Screenshot_20250922_154714.png" alt="Details Page">
+    </td>
   </tr>
-
- </table>
+</table>
 
 ## 🌟 Features
 
