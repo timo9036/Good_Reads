@@ -83,7 +83,11 @@ fun BookList(navController: NavController, viewModel: BooksSearchViewModel = hil
 
     val listOfBooks = viewModel.list
     if (viewModel.isLoading) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             LinearProgressIndicator()
             Text(text = "Loading...")
         }
@@ -110,7 +114,7 @@ fun BookRow(book: Item, navcontroller: NavController) {
             .height(100.dp)
             .padding(3.dp),
         shape = RectangleShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 7.dp)
     ) {
         Row(
@@ -129,29 +133,32 @@ fun BookRow(book: Item, navcontroller: NavController) {
                     .padding(end = 4.dp)
             )
             Column() {
-                Text(text = book.volumeInfo?.title ?: "No Title", overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = book.volumeInfo?.title ?: "No Title",
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium
+                )
                 Text(
                     text = "Author: ${book.volumeInfo?.authors?.joinToString(", ") ?: "N/A"}",
                     overflow = TextOverflow.Clip,
                     fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
                     text = "Date: ${book.volumeInfo?.publishedDate ?: "N/A"}",
                     overflow = TextOverflow.Clip,
                     fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
                     text = book.volumeInfo?.categories?.joinToString(", ") ?: "N/A",
                     overflow = TextOverflow.Clip,
                     fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
-                //todo
             }
         }
     }

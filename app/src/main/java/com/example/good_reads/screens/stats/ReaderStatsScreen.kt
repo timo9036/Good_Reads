@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.sharp.Person
@@ -24,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontStyle
@@ -57,7 +60,7 @@ fun ReaderStatsScreen(
         topBar = {
             ReaderAppBar(
                 title = "Book Stats",
-                icon = Icons.Default.ArrowBack,
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
                 showProfile = false,
                 navController = navController
             ) {
@@ -77,7 +80,7 @@ fun ReaderStatsScreen(
                 emptyList()
 
             }
-            Column {
+            Column(modifier = Modifier.padding(16.dp)) {
                 Row {
                     Box(
                         modifier = Modifier
@@ -93,7 +96,8 @@ fun ReaderStatsScreen(
                         text = "Hi, ${
                             currentUser?.email.toString()
                                 .split("@")[0].uppercase(Locale.getDefault())
-                        }"
+                        }",
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                 }
@@ -101,7 +105,7 @@ fun ReaderStatsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp),
-                    shape = CircleShape,
+                    shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(
 
                         defaultElevation = 6.dp
@@ -126,17 +130,24 @@ fun ReaderStatsScreen(
                         modifier = Modifier.padding(start = 25.dp, top = 4.dp, bottom = 4.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = "Your Stats", style = MaterialTheme.typography.labelLarge)
-                        Divider()
-                        Text(text = "You're reading: ${readingBooks.size} books")
-                        Text(text = "You've read: ${readBooksList.size} books")
+                        Text(text = "Your Stats", style = MaterialTheme.typography.titleLarge)
+                        Divider(modifier = Modifier.padding(vertical = 4.dp))
+                        Text(text = "You're reading: ${readingBooks.size} books", style = MaterialTheme.typography.bodyMedium)
+                        Text(text = "You've read: ${readBooksList.size} books", style = MaterialTheme.typography.bodyMedium)
 
                     }
 
                 }
 
                 if (viewModel.data.value.loading == true) {
-                    LinearProgressIndicator()
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        LinearProgressIndicator()
+                        Text(text = "Loading stats...")
+                    }
                 } else {
                     Divider()
                     LazyColumn(
@@ -183,7 +194,7 @@ fun BookRowStats(
             .fillMaxWidth()
             .height(100.dp)
             .padding(3.dp),
-        shape = RectangleShape,
+        shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 7.dp
         )) {
@@ -203,14 +214,15 @@ fun BookRowStats(
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxHeight()
-                    .padding(end = 4.dp),
+                    .padding(end = 4.dp)
+                    .clip(RoundedCornerShape(4.dp)),
             )
 
             Column {
 
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
 
-                    Text(text = book.title.toString(), overflow = TextOverflow.Ellipsis)
+                    Text(text = book.title.toString(), overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
                     if (book.rating!! >= 4) {
                         Spacer(modifier = Modifier.fillMaxWidth(0.8f))
                         Icon(

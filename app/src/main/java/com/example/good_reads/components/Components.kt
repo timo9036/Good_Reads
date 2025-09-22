@@ -22,11 +22,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -73,16 +78,21 @@ import com.example.good_reads.model.MBook
 import com.example.good_reads.navigation.ReaderScreens
 import com.google.firebase.auth.FirebaseAuth
 
+//splashscreen
 @Composable
 fun ReaderLogo(modifier: Modifier = Modifier) {
     Text(
         text = "Good Reads",
-        modifier = modifier.padding(16.dp),
-        style = MaterialTheme.typography.labelLarge,
-        color = Color.Red.copy(alpha = 0.5f)
+        modifier = modifier.padding(bottom = 16.dp),
+        style = TextStyle(
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 52.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
     )
 }
 
+//login
 @Composable
 fun EmailInput(
     modifier: Modifier = Modifier, emailState: MutableState<String>,
@@ -123,11 +133,11 @@ fun InputField(
             color = MaterialTheme.colorScheme.onBackground
         ),
         modifier = modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-        keyboardActions = onAction
+        keyboardActions = onAction,
+        shape = RoundedCornerShape(12.dp)
     )
 }
 
@@ -153,7 +163,6 @@ fun PasswordInput(
         singleLine = true,
         textStyle = TextStyle(fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground),
         modifier = modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(),
         enabled = enabled,
         keyboardOptions = KeyboardOptions(
@@ -162,7 +171,8 @@ fun PasswordInput(
         ),
         visualTransformation = visualTransformation,
         trailingIcon = { PasswordVisibility(passwordVisibility = passwordVisibility) },
-        keyboardActions = onAction
+        keyboardActions = onAction,
+        shape = RoundedCornerShape(12.dp)
     )
 }
 
@@ -170,10 +180,16 @@ fun PasswordInput(
 fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     val visible = passwordVisibility.value
     IconButton(onClick = { passwordVisibility.value = !visible }) {
-        Icons.Default.Close
+        Icon(
+            imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+            contentDescription = if (visible) "Hide password" else "Show password"
+        )
     }
 }
 
+
+
+//mainscreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderAppBar(
@@ -188,22 +204,23 @@ fun ReaderAppBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (showProfile) {
                     Icon(
-                        imageVector = Icons.Default.ThumbUp, contentDescription = "Logo Icon",
+                        imageVector = Icons.Default.AutoStories,
+                        contentDescription = "Logo Icon",
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
-                            .scale(0.7f)
+                            .scale(0.9f)
                     )
                 }
                 if (icon != null) {
                     Icon(
                         imageVector = icon, contentDescription = "arrow back",
-                        tint = Color.Red.copy(alpha = 0.7f),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable { onBackArrowClicked.invoke() })
                 }
                 Spacer(modifier = Modifier.width(40.dp))
                 Text(
                     text = title,
-                    color = Color.Red.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.primary,
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 )
 
@@ -216,10 +233,11 @@ fun ReaderAppBar(
             }) {
                 if (showProfile) Row {
                     Icon(
-                        Icons.Filled.PlayArrow, contentDescription = "Logout",
-                        tint = Color.Green.copy(alpha = 0.4f)
+                        imageVector = Icons.Default.Logout,
+                        contentDescription = "Logout",
+                        tint = MaterialTheme.colorScheme.secondary
                     )
-                } else Box{}
+                } else Box {}
 
             }
         }, colors = TopAppBarDefaults.topAppBarColors(
@@ -246,7 +264,7 @@ fun TitleSection(modifier: Modifier = Modifier, label: String) {
 fun FABContent(onTap: () -> Unit) {
     FloatingActionButton(
         onClick = { onTap() }, shape = RoundedCornerShape(50.dp),
-        containerColor = Color(0xFF92CBDF)
+        containerColor = MaterialTheme.colorScheme.primary
     ) {
         Icon(
             imageVector = Icons.Default.Add,
@@ -262,12 +280,14 @@ fun BookRating(score: Double = 4.5) {
         modifier = Modifier
             .height(70.dp)
             .padding(6.dp),
-        color = Color.White
+        shape = RoundedCornerShape(56.dp),
+        shadowElevation = 4.dp
     ) {
-        Column(modifier = Modifier.padding(4.dp)) {
+        Column(modifier = Modifier.padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 imageVector = Icons.Filled.Star, contentDescription = "Star",
-                modifier = Modifier.padding(3.dp)
+                modifier = Modifier.padding(3.dp),
+                tint = Color.Red
             )
             Text(text = score.toString(), style = MaterialTheme.typography.labelLarge)
         }
@@ -285,16 +305,14 @@ fun ListCard(book: MBook,
     val screenWidth = displayMetrics.widthPixels / displayMetrics.density
     val spacing = 10.dp
 
-    Card(shape = RoundedCornerShape(29.dp),
+    Card(shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-
-            containerColor = Color.White
-
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
 
         elevation = CardDefaults.cardElevation(
 
-            defaultElevation = 6.dp
+            defaultElevation = 8.dp
 
         ),
         modifier = Modifier
@@ -312,7 +330,8 @@ fun ListCard(book: MBook,
                     modifier = Modifier
                         .height(140.dp)
                         .width(100.dp)
-                        .padding(4.dp))
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(topStart = 120.dp, topEnd = 20.dp)))
                 Spacer(modifier = Modifier.width(50.dp))
 
                 Column(modifier = Modifier.padding(top = 25.dp),
@@ -361,7 +380,7 @@ fun RoundedButton(
     Surface(modifier = Modifier.clip(RoundedCornerShape(
         bottomEndPercent = radius,
         topStartPercent = radius)),
-        color = Color(0xFF92CBDF)) {
+        color = MaterialTheme.colorScheme.primary) {
 
         Column(modifier = Modifier
             .width(90.dp)

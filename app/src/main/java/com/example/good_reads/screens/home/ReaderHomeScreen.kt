@@ -56,7 +56,9 @@ fun Home(navController: NavController, viewModel: HomeScreenViewModel = hiltView
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            HomeContent(navController, viewModel)
+            Column(modifier = Modifier.padding(16.dp)) {
+                HomeContent(navController, viewModel)
+            }
         }
     }
 }
@@ -89,12 +91,12 @@ fun HomeContent(navController: NavController, viewModel: HomeScreenViewModel) {
                             navController.navigate(ReaderScreens.ReaderStatsScreen.name)
                         }
                         .size(45.dp),
-                    tint = MaterialTheme.colorScheme.secondaryContainer)
+                    tint = MaterialTheme.colorScheme.secondary)
                 Text(
                     text = currentUserName!!,
                     modifier = Modifier.padding(2.dp),
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 15.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Clip
@@ -136,14 +138,17 @@ fun HorizontalScrollableComponent(
             .horizontalScroll(scrollState)
     ) {
         if (viewModel.data.value.loading == true) {
-            LinearProgressIndicator()
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                LinearProgressIndicator()
+                Text(text = "Loading books...")
+            }
         } else {
             if (listOfBooks.isNullOrEmpty()) {
                 Surface(modifier = Modifier.padding(23.dp)) {
                     Text(
                         text = "No Books Found. Please Add a Book",
                         style = TextStyle(
-                            color = Color.Red.copy(alpha = 0.4f),
+                            color = MaterialTheme.colorScheme.error,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp
                         )
@@ -171,4 +176,3 @@ fun ReadingRightNowArea(listOfBooks: List<MBook>, navController: NavController) 
         navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
     }
 }
-

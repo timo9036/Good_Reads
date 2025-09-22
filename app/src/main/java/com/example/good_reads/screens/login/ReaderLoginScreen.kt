@@ -1,6 +1,6 @@
 package com.example.good_reads.screens.login
 
-import android.inputmethodservice.Keyboard
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,21 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,15 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,24 +55,28 @@ fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewMo
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 24.dp)
         ) {
             ReaderLogo()
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             if (showLoginForm.value) {
-                UserForm(loading = false, isCreateAccount = false) { email, password ->
+                UserForm(isCreateAccount = false) { email, password ->
                     viewModel.signInWithEmailAndPassword(email, password) {
                         navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
                 }
             } else {
-                UserForm(loading = false, isCreateAccount = true) { email, password ->
+                UserForm(isCreateAccount = true) { email, password ->
                     viewModel.createUserWithEmailAndPassword(email, password) {
                         navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.padding(15.dp),
@@ -100,22 +93,26 @@ fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewMo
                         }
                         .padding(start = 5.dp),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondaryContainer
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
-            // New Button for Guest Login
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
+
+            OutlinedButton(
                 onClick = {
                     viewModel.signInWithEmailAndPassword("guest@guest.com", "tester") {
                         navController.navigate(ReaderScreens.ReaderHomeScreen.name)
                     }
                 },
-                modifier = Modifier.padding(horizontal = 15.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
-                Text(text = "Login as Guest")
+                Text(
+                    text = "Login as Guest",
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
@@ -127,7 +124,7 @@ fun ReaderLoginScreen(navController: NavController, viewModel: LoginScreenViewMo
 fun UserForm(
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
-    onDone: (String, String) -> Unit = { email, pwd -> }
+    onDone: (String, String) -> Unit = { _, _ -> }
 ) {
     val email = rememberSaveable {
         mutableStateOf("")
@@ -142,22 +139,27 @@ fun UserForm(
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
     }
 
-    val modifier = Modifier
-        .height(250.dp)
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val title = if (isCreateAccount) stringResource(id = R.string.create_acct) else "Please Login"
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        if (isCreateAccount) Text(
-            text = stringResource(id = R.string.create_acct),
-            modifier = Modifier.padding(4.dp)
-        ) else Text("")
         EmailInput(
             emailState = email, enabled = !loading,
             onAction = KeyboardActions {
                 passwrodFocusRequest.requestFocus()
             },
         )
+        Spacer(modifier = Modifier.height(8.dp))
         PasswordInput(
             modifier = Modifier.focusRestorer(passwrodFocusRequest),
             passwordState = password,
@@ -169,6 +171,8 @@ fun UserForm(
                 onDone(email.value.trim(), password.value.trim())
             }
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         SubmitButton(
             textId = if (isCreateAccount) "Create Account" else "Login",
@@ -187,13 +191,18 @@ fun SubmitButton(textId: String, loading: Boolean, validInputs: Boolean, onClick
     Button(
         onClick = onClick,
         modifier = Modifier
-            .padding(3.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(48.dp),
         enabled = !loading && validInputs,
-        shape = CircleShape
+        shape = RoundedCornerShape(12.dp)
     ) {
-        if (loading) CircularProgressIndicator(modifier = Modifier.size(25.dp))
-        else Text(text = textId, modifier = Modifier.padding(5.dp))
+        if (loading) CircularProgressIndicator(
+            modifier = Modifier.size(25.dp),
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+        else Text(
+            text = textId,
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
     }
 }
-
